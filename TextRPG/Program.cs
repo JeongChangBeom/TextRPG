@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 using System.Text;
 using static TextRPG.Program;
 using System.Xml.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace TextRPG
 {
@@ -14,8 +15,9 @@ namespace TextRPG
         public class Player
         {
             public int level { get; set; }
+            public int exp { get; set; }
             public string chad { get; set; }
-            public int attack { get; set; }
+            public float attack { get; set; }
             public int attackItem { get; set; }
             public int defense { get; set; }
             public int defenseItem { get; set; }
@@ -27,6 +29,7 @@ namespace TextRPG
             public Player(string _chad, int _attack, int _defense, int _health, int _gold)
             {
                 level = 1;
+                exp = 0;
                 chad = _chad;
                 attack = _attack;
                 attackItem = 0;
@@ -34,7 +37,7 @@ namespace TextRPG
                 defenseItem = 0;
                 health = _health;
                 gold = _gold;
-                weapon = new Item("없음","무기",0,"-",0);
+                weapon = new Item("없음", "무기", 0, "-", 0);
                 armor = new Item("없음", "방어구", 0, "-", 0);
             }
 
@@ -113,7 +116,7 @@ namespace TextRPG
             }
 
             //  아이템을 장착하거나 해제할 때 사용하는 함수
-            public void Equip(Player player,Item item)
+            public void Equip(Player player, Item item)
             {
                 if (!equipState)
                 {
@@ -224,6 +227,60 @@ namespace TextRPG
             }
         }
 
+        //  던전 클래스
+        public class Dungeon
+        {
+            public string name { get; set; }
+            public int level { get; set; }
+            public int dungeonForce { get; set; }
+            public int reward { get; set; }
+            public bool isClear { get; set; }
+
+            public Dungeon(int _level)
+            {
+                level = _level;
+                isClear = false;
+
+                if (level == 1)
+                {
+                    name = "쉬운 던전";
+                    dungeonForce = 5;
+                    reward = 1000;
+                }
+                else if (level == 2)
+                {
+                    name = "일반 던전";
+                    dungeonForce = 11;
+                    reward = 1700;
+                }
+                else if (level == 3)
+                {
+                    name = "어려운 던전";
+                    dungeonForce = 17;
+                    reward = 2500;
+                }
+            }
+
+            public void DungeonPlay(Player player)
+            {
+                if (player.defense >= dungeonForce)
+                {
+                    isClear = true;
+                }
+                else
+                {
+                    if (new Random().Next(0, 10) < 4)
+                    {
+                        isClear = false;
+                    }
+                    else
+                    {
+                        isClear = true;
+                    }
+                }
+            }
+        }
+
         //  시작 마을 장면 함수
         public static void StartVilageScene(Player player, Inventory inventory, Shop shop)
         {
@@ -271,7 +328,7 @@ namespace TextRPG
                             StartShopScene(player, inventory, shop);
                             break;
                         case 4:
-
+                            StartDungeonScene(player, inventory, shop);
                             break;
                         case 5:
                             StartRestScene(player, inventory, shop);
@@ -681,6 +738,225 @@ namespace TextRPG
                     {
                         Console.WriteLine("잘못된 입력입니다.");
                         Console.WriteLine();
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+                    Console.WriteLine("잘못된 입력입니다.");
+                    Console.WriteLine();
+                }
+            }
+        }
+
+        //  던전 장면 함수
+        public static void StartDungeonScene(Player player, Inventory inventory, Shop shop)
+        {
+            Console.WriteLine("던전입장");
+            Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
+
+            Console.WriteLine();
+
+            Console.WriteLine("1. 쉬운 던전      | 방어력 5 이상 권장");
+            Console.WriteLine("2. 일반 던전      | 방어력 11 이상 권장");
+            Console.WriteLine("3. 어려운 던전    | 방어력 17 이상 권장");
+            Console.WriteLine("0. 나가기");
+
+            Console.WriteLine();
+
+            while (true)
+            {
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.Write(">> ");
+
+                int cmd = -1;
+
+                try
+                {
+                    int.TryParse(Console.ReadLine(), out cmd);
+
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+
+                    switch (cmd)
+                    {
+                        case 1:
+                            Dungeon dungeon1 = new Dungeon(1);
+                            dungeon1.DungeonPlay(player);
+
+                            if (dungeon1.isClear)
+                            {
+                                StartDungeonClearScene(player, inventory, shop, dungeon1);
+                            }
+                            else
+                            {
+                                StartDungeonFailScene(player, inventory, shop, dungeon1);
+                            }
+                            break;
+                        case 2:
+                            Dungeon dungeon2 = new Dungeon(2);
+                            dungeon2.DungeonPlay(player);
+
+                            if (dungeon2.isClear)
+                            {
+                                StartDungeonClearScene(player, inventory, shop, dungeon2);
+                            }
+                            else
+                            {
+                                StartDungeonFailScene(player, inventory, shop, dungeon2);
+                            }
+                            break;
+                        case 3:
+                            Dungeon dungeon3 = new Dungeon(2);
+                            dungeon3.DungeonPlay(player);
+
+                            if (dungeon3.isClear)
+                            {
+                                StartDungeonClearScene(player, inventory, shop, dungeon3);
+                            }
+                            else
+                            {
+                                StartDungeonFailScene(player, inventory, shop, dungeon3);
+                            }
+                            break;
+                        case 0:
+                            StartVilageScene(player, inventory, shop);
+                            break;
+                        default:
+                            Console.WriteLine("잘못된 입력입니다.");
+                            Console.WriteLine();
+                            break;
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+                    Console.WriteLine("잘못된 입력입니다.");
+                    Console.WriteLine();
+                }
+            }
+        }
+
+        //  던전 클리어 장면 함수
+        public static void StartDungeonClearScene(Player player, Inventory inventory, Shop shop, Dungeon dungeon)
+        {
+            Console.WriteLine("던전 클리어");
+            Console.WriteLine("축하합니다!!");
+            Console.WriteLine($"{dungeon.name}을 클리어 하였습니다.");
+
+            Console.WriteLine();
+
+            Console.WriteLine("[탐험 결과]");
+            Console.Write($"체력 {player.health} -> ");
+            player.health = player.health - new Random().Next(20, 36) + player.defense - dungeon.dungeonForce;
+            Console.WriteLine($"{player.health}");
+
+            Console.Write($"Gold {player.gold} G -> ");
+            player.gold = player.gold + (dungeon.reward * new Random().Next((int)player.attack, (int)player.attack * 2 + 1) / 100);
+            Console.WriteLine($"{player.gold} G");
+
+            Console.Write($"EXP {player.exp} -> ");
+            player.exp++;
+            Console.WriteLine($"EXP {player.exp}");
+
+            if (player.level == player.exp)
+            {
+                Console.WriteLine();
+                Console.WriteLine("[레벨업!]");
+                Console.Write($"LV {player.level} -> ");
+                player.level++;
+                Console.WriteLine($"LV {player.level}");
+                player.exp = 0;
+                Console.WriteLine($"EXP {player.exp}");
+            }
+
+            Console.WriteLine();
+
+            Console.WriteLine("0. 나가기");
+
+            Console.WriteLine();
+
+            while (true)
+            {
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.Write(">> ");
+
+                int cmd = -1;
+
+                try
+                {
+                    int.TryParse(Console.ReadLine(), out cmd);
+
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+
+                    switch (cmd)
+                    {
+                        case 0:
+                            StartVilageScene(player, inventory, shop);
+                            break;
+                        default:
+                            Console.WriteLine("잘못된 입력입니다.");
+                            Console.WriteLine();
+                            break;
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+                    Console.WriteLine("잘못된 입력입니다.");
+                    Console.WriteLine();
+                }
+            }
+        }
+
+        //  던전 실패 장면 함수
+        public static void StartDungeonFailScene(Player player, Inventory inventory, Shop shop, Dungeon dungeon)
+        {
+            Console.WriteLine("던전 실패");
+            Console.WriteLine($"{dungeon.name}을 클리어하지 못했습니다.");
+
+            Console.WriteLine();
+
+            Console.WriteLine("[탐험 결과]");
+            Console.Write($"체력 {player.health} -> ");
+            player.health /= 2;
+            Console.WriteLine($"{player.health}");
+
+            Console.WriteLine($"Gold {player.gold} G -> {player.gold} G");
+
+            Console.WriteLine();
+
+            Console.WriteLine("0. 나가기");
+
+            Console.WriteLine();
+
+            while (true)
+            {
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.Write(">> ");
+
+                int cmd = -1;
+
+                try
+                {
+                    int.TryParse(Console.ReadLine(), out cmd);
+
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+
+                    switch (cmd)
+                    {
+                        case 0:
+                            StartVilageScene(player, inventory, shop);
+                            break;
+                        default:
+                            Console.WriteLine("잘못된 입력입니다.");
+                            Console.WriteLine();
+                            break;
                     }
                 }
                 catch (Exception)

@@ -22,6 +22,7 @@ namespace TextRPG
             public Item weapon { get; set; }
             public Item armor { get; set; }
 
+            //  Player 클래스의 직렬화를 위한 기본 생성자
             public Player()
             {
                 level = 1;
@@ -35,6 +36,7 @@ namespace TextRPG
                 gold = 1500;
             }
 
+            // Player 클래스 생성자
             public Player(string _chad, int _attack, int _defense, int _health, int _gold)
             {
                 level = 1;
@@ -81,6 +83,7 @@ namespace TextRPG
                 Console.WriteLine($"Gold : {gold} G");
             }
 
+            //  Player 클래스의 데이터를 저장하는 함수
             public void Save(string fileName)
             {
                 using (var stream = new FileStream(fileName, FileMode.Create))
@@ -90,6 +93,7 @@ namespace TextRPG
                 }
             }
 
+            //  Player 클래스의 데이터를 불러오는 함수
             public static Player LoadFromFile(string fileName)
             {
                 using (var stream = new FileStream(fileName, FileMode.Open))
@@ -110,6 +114,7 @@ namespace TextRPG
             public bool equipState { get; set; }
             public int price { get; set; }
 
+            //  직렬화를 위한 Item 클래스의 기본 생성자
             public Item()
             {
                 name = "";
@@ -120,6 +125,7 @@ namespace TextRPG
                 price = 0;
             }
 
+            //  Item 클래스의 생성자
             public Item(string _name, string _type, int _stat, string _description, int _price)
             {
                 name = _name;
@@ -194,6 +200,7 @@ namespace TextRPG
                 }
             }
 
+            //  Item 클래스의 데이터를 저장하는 함수
             public void Save(string fileName)
             {
                 using (var stream = new FileStream(fileName, FileMode.Create))
@@ -203,6 +210,7 @@ namespace TextRPG
                 }
             }
 
+            //  Item 클래스의 데이터를 불러오는 함수
             public static Item LoadFromFile(string fileName)
             {
                 using (var stream = new FileStream(fileName, FileMode.Open))
@@ -218,6 +226,7 @@ namespace TextRPG
         {
             public List<Item> items { get; set; }
 
+            //  Inventory 클래스의 생성자
             public Inventory()
             {
                 items = new List<Item>();
@@ -229,6 +238,7 @@ namespace TextRPG
                 items.Add(item);
             }
 
+            //  Inventory 클래스의 데이터를 저장하기 위한 함수
             public void Save(string fileName)
             {
                 using (var stream = new FileStream(fileName, FileMode.Create))
@@ -238,6 +248,7 @@ namespace TextRPG
                 }
             }
 
+            //  Inventory 클래스의 데이터를 불러오기 위한 함수
             public static Inventory LoadFromFile(string fileName)
             {
                 using (var stream = new FileStream(fileName, FileMode.Open))
@@ -254,6 +265,7 @@ namespace TextRPG
             public List<Item> shopItems { get; set; }
             public List<Item> buyItems { get; set; }
 
+            //  Shop 클래스의 생성자
             public Shop()
             {
                 shopItems = new List<Item>();
@@ -298,6 +310,7 @@ namespace TextRPG
                 }
             }
 
+            //  Shop 클래스의 데이터를 저장하는 함수
             public void Save(string fileName)
             {
                 using (var stream = new FileStream(fileName, FileMode.Create))
@@ -307,6 +320,7 @@ namespace TextRPG
                 }
             }
 
+            //  Shop 클래스의 데이터를 불러오는 함수
             public static Shop LoadFromFile(string fileName)
             {
                 using (var stream = new FileStream(fileName, FileMode.Open))
@@ -326,6 +340,7 @@ namespace TextRPG
             public int reward { get; set; }
             public bool isClear { get; set; }
 
+            //  Dungeon 클래스의 생성자
             public Dungeon(int _level)
             {
                 level = _level;
@@ -351,6 +366,7 @@ namespace TextRPG
                 }
             }
 
+            //  Dungeon이 시작되고 클리어를 했는지 못했는지 체크해주는 함수
             public void DungeonPlay(Player player)
             {
                 if (player.defense >= dungeonForce)
@@ -511,11 +527,13 @@ namespace TextRPG
             for (int i = 0; i < inventory.items.Count; i++)
             {
                 Console.Write("- ");
+                //  아이템이 장착된 상태이면 "[E]"를 추가해준다.
                 if (inventory.items[i].equipState)
                 {
                     Console.Write("[E] ");
                 }
                 inventory.items[i].ItemInfo();
+
                 Console.WriteLine();
             }
 
@@ -576,6 +594,7 @@ namespace TextRPG
             for (int i = 0; i < inventory.items.Count; i++)
             {
                 Console.Write($"- {i + 1}. ");
+                //  아이템이 장착되어 있으면 "[E]"를 추가
                 if (inventory.items[i].equipState)
                 {
                     Console.Write("[E] ");
@@ -608,6 +627,7 @@ namespace TextRPG
                     }
                     else if (cmd > 0 && cmd <= inventory.items.Count)
                     {
+                        //  플레이어가 선택한 장비를 장착한다.
                         inventory.items[cmd - 1].Equip(player, inventory.items[cmd - 1]);
                         StartEquipManagementScene(player, inventory, shop);
                     }
@@ -727,6 +747,7 @@ namespace TextRPG
                     {
                         if (player.gold >= shop.shopItems[cmd - 1].price)
                         {
+                            //  Shop 클래스의 구매한 아이템을 관리하는 리스트인 buyItems에 사려는 아이템이 존재하면,
                             if (shop.buyItems.FindIndex(Item => Item.name.Equals(shop.shopItems[cmd - 1].name)) >= 0)
                             {
                                 Console.WriteLine("이미 구매한 아이템입니다.");
@@ -807,9 +828,11 @@ namespace TextRPG
                     }
                     else if (cmd > 0 && cmd <= inventory.items.Count)
                     {
+                        //  shop.buyItems(구매한 아이템 목록)과 inventory.items(인벤토리에 존재하는 아이템)에서 판매하려는 아이템의 주소를 저장한다.
                         int saleItemIndex = shop.buyItems.FindIndex(Item => Item.name.Equals(inventory.items[cmd - 1].name));
                         int inventoryItemIndex = inventory.items.FindIndex(Item => Item.name.Equals(inventory.items[cmd - 1].name));
 
+                        //  만약 판매하려는 아이템이 장착 상태이면, 장착을 해제한다.
                         if (inventory.items[inventoryItemIndex].equipState)
                         {
                             inventory.items[inventoryItemIndex].equipState = false;
@@ -824,8 +847,10 @@ namespace TextRPG
                             }
                         }
 
+                        //  판매한 아이템 가격의 85%만큼 gold를 획득한다.
                         player.gold += (inventory.items[inventoryItemIndex].price) * 85 / 100;
 
+                        //  구매한 아이템 목록과 인벤토리에 존재하는 아이템 리스트에서 판매한 아이템을 삭제한다.
                         shop.buyItems.RemoveAt(saleItemIndex);
                         inventory.items.RemoveAt(inventoryItemIndex);
 
@@ -1130,6 +1155,7 @@ namespace TextRPG
             }
         }
 
+        //  저장하기 장면 함수
         public static void StartSaveScene(Player player, Inventory inventory, Shop shop)
         {
             Console.WriteLine("저장하기");
@@ -1183,6 +1209,7 @@ namespace TextRPG
             }
         }
 
+        //  현재 게임의 데이터를 저장하는 함수
         public static void DataSave(Player player, Inventory inventory, Shop shop)
         {
             player.Save("player.xml");
@@ -1190,6 +1217,7 @@ namespace TextRPG
             shop.Save("shop.xml");
         }
 
+        //  불러오기 장면 함수
         public static void StartLoadScene(Player player, Inventory inventory, Shop shop)
         {
             Console.WriteLine("불러오기");
@@ -1243,13 +1271,13 @@ namespace TextRPG
             }
         }
 
+        //  이전에 저장했던 게임의 데이터를 불러오는 함수
         public static void DataLoad(ref Player player, ref Inventory inventory, ref Shop shop)
         {
             player = Player.LoadFromFile("player.xml");
             inventory = Inventory.LoadFromFile("inventory.xml");
             shop = Shop.LoadFromFile("shop.xml");
         }
-
         static void Main(string[] args)
         {
             //  클래스 생성
@@ -1265,6 +1293,7 @@ namespace TextRPG
             Item bronzeAxe = new Item("청동 도끼", "무기", 5, "어디선가 사용됐던거 같은 도끼입니다.", 1500);
             Item spartaSpear = new Item("스파르타의 창", "무기", 7, "스파르타의 전사들이 사용했다는 전설의 창입니다.", 2700);
 
+            //  자작 아이템
             Item gmSword = new Item("운영자의 검", "무기", 999, "운영자용 테스트 검", 99999);
             Item gmHat = new Item("운영자의 모자", "방어구", 999, "운영자용 테스트 모자", 99999);
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Text;
 using static TextRPG.Program;
+using System.Xml.Linq;
 
 namespace TextRPG
 {
@@ -17,6 +18,7 @@ namespace TextRPG
             public int attackItem { get; set; }
             public int defense { get; set; }
             public int defenseItem { get; set; }
+            public int maxHealth { get; set; }
             public int health { get; set; }
             public int gold { get; set; }
 
@@ -103,8 +105,6 @@ namespace TextRPG
 
             public void Equip(Player player)
             {
-                StringBuilder sb = new StringBuilder();
-
                 if (!equipState)
                 {
                     equipState = true;
@@ -119,11 +119,6 @@ namespace TextRPG
                     }
 
                     Console.WriteLine($"{name}을(를) 착용 하였습니다.");
-
-                    sb.Append("[E]" + name);
-
-                    name = sb.ToString();
-
                     Console.WriteLine();
                 }
                 else
@@ -138,11 +133,6 @@ namespace TextRPG
                     {
                         player.attackItem -= stat;
                     }
-
-                    sb.Append(name);
-                    sb.Remove(0, 3);
-
-                    name = sb.ToString();
 
                     Console.WriteLine($"{name}을(를) 해제 하였습니다.");
                     Console.WriteLine();
@@ -226,11 +216,14 @@ namespace TextRPG
             Console.WriteLine("1. 상태보기");
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine("3. 상점");
+            Console.WriteLine("4. 던전입장");
+            Console.WriteLine("5. 휴식하기");
 
             Console.WriteLine();
 
             while (true)
             {
+                Console.WriteLine();
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
                 Console.Write(">> ");
 
@@ -239,40 +232,42 @@ namespace TextRPG
                 try
                 {
                     cmd = int.Parse(Console.ReadLine());
+
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+
+                    switch (cmd)
+                    {
+                        case 1:
+                            StartStateScene(player, inventory, shop);
+                            break;
+                        case 2:
+                            StartInventoryScene(player, inventory, shop);
+                            break;
+                        case 3:
+                            StartShopScene(player, inventory, shop);
+                            break;
+                        case 4:
+
+                            break;
+                        case 5:
+                            StartRestScene(player, inventory, shop);
+                            break;
+                        default:
+                            Console.WriteLine("잘못된 입력입니다.");
+                            Console.WriteLine();
+                            break;
+
+                    }
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
                     Console.WriteLine("잘못된 입력입니다.");
-                }
-
-                Console.WriteLine();
-                Console.WriteLine("----------------------------------------------------------");
-
-                switch (cmd)
-                {
-                    case 1:
-                        StartStateScene(player, inventory, shop);
-                        break;
-                    case 2:
-                        StartInventoryScene(player, inventory, shop);
-                        break;
-                    case 3:
-                        StartShopScene(player, inventory, shop);
-                        break;
-                    default:
-                        Console.WriteLine("잘못된 입력입니다.");
-                        break;
-                }
-
-                if (cmd == 1 || cmd == 2 || cmd == 3)
-                {
-                    break;
+                    Console.WriteLine();
                 }
             }
-
-            Console.WriteLine();
-
-            Console.WriteLine("----------------------------------------------------------");
         }
 
         public static void StartStateScene(Player player, Inventory inventory, Shop shop)
@@ -293,33 +288,34 @@ namespace TextRPG
                 try
                 {
                     cmd = int.Parse(Console.ReadLine());
+
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+
+                    switch (cmd)
+                    {
+                        case 0:
+                            StartVilageScene(player, inventory, shop);
+                            break;
+                        default:
+                            Console.WriteLine("잘못된 입력입니다.");
+                            Console.WriteLine();
+                            break;
+                    }
+
+                    if (cmd == 0)
+                    {
+                        break;
+                    }
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
                     Console.WriteLine("잘못된 입력입니다.");
-                }
-
-                Console.WriteLine();
-                Console.WriteLine("----------------------------------------------------------");
-
-                switch (cmd)
-                {
-                    case 0:
-                        StartVilageScene(player, inventory, shop);
-                        break;
-                    default:
-                        Console.WriteLine("잘못된 입력입니다.");
-                        break;
-                }
-
-                if (cmd == 0)
-                {
-                    break;
+                    Console.WriteLine();
                 }
             }
-
-            Console.WriteLine();
-            Console.WriteLine("----------------------------------------------------------");
         }
 
         public static void StartInventoryScene(Player player, Inventory inventory, Shop shop)
@@ -329,15 +325,19 @@ namespace TextRPG
             Console.WriteLine();
 
 
-                Console.WriteLine("[아이템 목록]");
-                Console.WriteLine();
+            Console.WriteLine("[아이템 목록]");
+            Console.WriteLine();
 
-                for (int i = 0; i < inventory.items.Count; i++)
+            for (int i = 0; i < inventory.items.Count; i++)
+            {
+                Console.Write("- ");
+                if (inventory.items[i].equipState)
                 {
-                    Console.Write("- ");
-                    inventory.items[i].ItemInfo();
-                    Console.WriteLine();
+                    Console.Write("[E] ");
                 }
+                inventory.items[i].ItemInfo();
+                Console.WriteLine();
+            }
 
 
             Console.WriteLine();
@@ -355,35 +355,32 @@ namespace TextRPG
                 try
                 {
                     cmd = int.Parse(Console.ReadLine());
+
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+
+                    switch (cmd)
+                    {
+                        case 0:
+                            StartVilageScene(player, inventory, shop);
+                            break;
+                        case 1:
+                            StartEquipManagementScene(player, inventory, shop);
+                            break;
+                        default:
+                            Console.WriteLine("잘못된 입력입니다.");
+                            Console.WriteLine();
+                            break;
+                    }
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
                     Console.WriteLine("잘못된 입력입니다.");
-                }
-
-                Console.WriteLine();
-                Console.WriteLine("----------------------------------------------------------");
-
-                switch (cmd)
-                {
-                    case 0:
-                        StartVilageScene(player, inventory, shop);
-                        break;
-                    case 1:
-                        StartEquipManagementScene(player, inventory, shop);
-                        break;
-                    default:
-                        Console.WriteLine("잘못된 입력입니다.");
-                        break;
-                }
-                if (cmd == 0 || cmd == 1)
-                {
-                    break;
+                    Console.WriteLine();
                 }
             }
-
-            Console.WriteLine();
-            Console.WriteLine("----------------------------------------------------------");
         }
 
         public static void StartEquipManagementScene(Player player, Inventory inventory, Shop shop)
@@ -398,6 +395,10 @@ namespace TextRPG
             for (int i = 0; i < inventory.items.Count; i++)
             {
                 Console.Write($"- {i + 1}. ");
+                if (inventory.items[i].equipState)
+                {
+                    Console.Write("[E] ");
+                }
                 inventory.items[i].ItemInfo();
                 Console.WriteLine();
             }
@@ -413,40 +414,36 @@ namespace TextRPG
 
                 int cmd = -1;
 
-                try
-                {
-                    cmd = int.Parse(Console.ReadLine());
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("잘못된 입력입니다.");
-                }
-
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------------------");
 
-                if (cmd == 0)
+                try
                 {
-                    StartInventoryScene(player, inventory, shop);
-                }
-                else if (cmd > 0 && cmd <= inventory.items.Count)
-                {
-                    inventory.items[cmd - 1].Equip(player);
-                    StartEquipManagementScene(player, inventory, shop);
-                }
-                else
-                {
-                    Console.WriteLine("잘못된 입력입니다.");
-                }
+                    cmd = int.Parse(Console.ReadLine());
 
-                if (cmd == 0 || (cmd > 0 && cmd <= inventory.items.Count))
+                    if (cmd == 0)
+                    {
+                        StartInventoryScene(player, inventory, shop);
+                    }
+                    else if (cmd > 0 && cmd <= inventory.items.Count)
+                    {
+                        inventory.items[cmd - 1].Equip(player);
+                        StartEquipManagementScene(player, inventory, shop);
+                    }
+                    else
+                    {
+                        Console.WriteLine("잘못된 입력입니다.");
+                        Console.WriteLine();
+                    }
+                }
+                catch (Exception ex)
                 {
-                    break;
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+                    Console.WriteLine("잘못된 입력입니다.");
+                    Console.WriteLine();
                 }
             }
-
-            Console.WriteLine();
-            Console.WriteLine("----------------------------------------------------------");
         }
 
         public static void StartShopScene(Player player, Inventory inventory, Shop shop)
@@ -463,6 +460,7 @@ namespace TextRPG
 
             Console.WriteLine();
             Console.WriteLine("1. 아이템 구매");
+            Console.WriteLine("2. 아이템 판매");
             Console.WriteLine("0. 나가기");
             Console.WriteLine();
 
@@ -476,38 +474,36 @@ namespace TextRPG
                 try
                 {
                     cmd = int.Parse(Console.ReadLine());
+
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+
+                    switch (cmd)
+                    {
+                        case 1:
+                            StartBuyItemScene(player, inventory, shop);
+                            break;
+                        case 2:
+                            StartSaleItemScene(player, inventory, shop);
+                            break;
+                        case 0:
+                            StartVilageScene(player, inventory, shop);
+                            break;
+                        default:
+                            Console.WriteLine("잘못된 입력입니다.");
+                            Console.WriteLine();
+                            break;
+                    }
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
                     Console.WriteLine("잘못된 입력입니다.");
-                }
-
-                Console.WriteLine();
-                Console.WriteLine("----------------------------------------------------------");
-
-                switch (cmd)
-                {
-                    case 1:
-                        StartBuyItemScene(player, inventory, shop);
-                        break;
-                    case 0:
-                        StartVilageScene(player, inventory, shop);
-                        break;
-                    default:
-                        Console.WriteLine("잘못된 입력입니다.");
-                        break;
-                }
-
-                if (cmd == 0 || (cmd > 0 && cmd <= inventory.items.Count))
-                {
-                    break;
+                    Console.WriteLine();
                 }
             }
-
-            Console.WriteLine();
-            Console.WriteLine("----------------------------------------------------------");
         }
-
 
         public static void StartBuyItemScene(Player player, Inventory inventory, Shop shop)
         {
@@ -536,65 +532,208 @@ namespace TextRPG
                 try
                 {
                     cmd = int.Parse(Console.ReadLine());
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("잘못된 입력입니다.");
-                }
 
-                Console.WriteLine();
-                Console.WriteLine("----------------------------------------------------------");
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
 
-                if (cmd == 0)
-                {
-                    StartShopScene(player, inventory, shop);
-                }
-                else if (cmd > 0 && cmd <= shop.shopItems.Count)
-                {
-                    if (player.gold >= shop.shopItems[cmd - 1].price)
+                    if (cmd == 0)
                     {
-                        if (shop.buyItems.FindIndex(Item => Item.name.Equals(shop.shopItems[cmd - 1].name)) >= 0)
+                        StartShopScene(player, inventory, shop);
+                    }
+                    else if (cmd > 0 && cmd <= shop.shopItems.Count)
+                    {
+                        if (player.gold >= shop.shopItems[cmd - 1].price)
                         {
-                            Console.WriteLine("이미 구매한 아이템입니다.");
-                            Console.WriteLine();
+                            if (shop.buyItems.FindIndex(Item => Item.name.Equals(shop.shopItems[cmd - 1].name)) >= 0)
+                            {
+                                Console.WriteLine("이미 구매한 아이템입니다.");
+                                Console.WriteLine();
+                            }
+                            else
+                            {
+                                shop.BuyItem(player, inventory, shop.shopItems[cmd - 1]);
+                                Console.WriteLine("구매를 완료했습니다.");
+                                Console.WriteLine();
+                            }
                         }
                         else
                         {
-                            shop.BuyItem(player, inventory, shop.shopItems[cmd - 1]);
-                            Console.WriteLine("구매를 완료했습니다.");
+                            Console.WriteLine("Gold가 부족합니다.");
                             Console.WriteLine();
                         }
+
+                        StartBuyItemScene(player, inventory, shop);
                     }
                     else
                     {
-                        Console.WriteLine("Gold가 부족합니다.");
+                        Console.WriteLine("잘못된 입력입니다.");
                         Console.WriteLine();
                     }
-
-                    StartBuyItemScene(player, inventory, shop);
                 }
-                else
+                catch (Exception ex)
                 {
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
                     Console.WriteLine("잘못된 입력입니다.");
+                    Console.WriteLine();
                 }
+            }
+        }
 
-                if (cmd == 0 || (cmd > 0 && cmd <= inventory.items.Count))
-                {
-                    break;
-                }
+        public static void StartSaleItemScene(Player player, Inventory inventory, Shop shop)
+        {
+            Console.WriteLine("상점 - 아이템 판매");
+            Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
+            Console.WriteLine();
+
+            Console.WriteLine("[보유 골드]");
+            Console.WriteLine($"{player.gold} G");
+            Console.WriteLine();
+
+            for (int i = 0; i < inventory.items.Count; i++)
+            {
+                Console.Write($"- {i + 1}. ");
+                inventory.items[i].ItemInfo();
+                Console.Write($"| {inventory.items[i].price} G |");
+                Console.WriteLine();
             }
 
             Console.WriteLine();
-            Console.WriteLine("----------------------------------------------------------");
+
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+
+            while (true)
+            {
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.Write(">> ");
+
+                int cmd = -1;
+
+                try
+                {
+                    cmd = int.Parse(Console.ReadLine());
+
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+
+                    if (cmd == 0)
+                    {
+                        StartShopScene(player, inventory, shop);
+                    }
+                    else if (cmd > 0 && cmd <= inventory.items.Count)
+                    {
+                        int saleItemIndex = shop.buyItems.FindIndex(Item => Item.name.Equals(inventory.items[cmd - 1].name));
+                        int inventoryItemIndex = inventory.items.FindIndex(Item => Item.name.Equals(inventory.items[cmd - 1].name));
+
+                        if (inventory.items[inventoryItemIndex].equipState)
+                        {
+                            inventory.items[inventoryItemIndex].equipState = false;
+
+                            if (inventory.items[inventoryItemIndex].type == "방어구")
+                            {
+                                player.defenseItem -= inventory.items[inventoryItemIndex].stat;
+                            }
+                            else if (inventory.items[inventoryItemIndex].type == "무기")
+                            {
+                                player.attackItem -= inventory.items[inventoryItemIndex].stat;
+                            }
+                        }
+
+                        player.gold += (inventory.items[inventoryItemIndex].price) * 85 / 100;
+
+                        shop.buyItems.RemoveAt(saleItemIndex);
+                        inventory.items.RemoveAt(inventoryItemIndex);
+
+
+                        StartSaleItemScene(player, inventory, shop);
+                    }
+                    else
+                    {
+                        Console.WriteLine("잘못된 입력입니다.");
+                        Console.WriteLine();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+                    Console.WriteLine("잘못된 입력입니다.");
+                    Console.WriteLine();
+                }
+            }
         }
 
+        public static void StartRestScene(Player player, Inventory inventory, Shop shop)
+        {
+            Console.WriteLine("휴식하기");
+            Console.WriteLine($"500 G 를 내면 체력을 회복할 수 있습니다. (보유 골드 : {player.gold}) G");
+
+            Console.WriteLine();
+
+            Console.WriteLine("1. 휴식하기");
+            Console.WriteLine("0. 나가기");
+
+            Console.WriteLine();
+
+            while (true)
+            {
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.Write(">> ");
+
+                int cmd = -1;
+
+                try
+                {
+                    cmd = int.Parse(Console.ReadLine());
+
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+
+                    switch (cmd)
+                    {
+                        case 1:
+                            if (player.gold >= 500)
+                            {
+                                player.gold -= 500;
+                                player.health = 100;
+                                Console.WriteLine("휴식을 완료했습니다.");
+                                Console.WriteLine();
+                                StartVilageScene(player, inventory, shop);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Gold가 부족합니다.");
+                                Console.WriteLine();
+                            }
+                            break;
+                        case 0:
+                            StartVilageScene(player, inventory, shop);
+                            break;
+                        default:
+                            Console.WriteLine("잘못된 입력입니다.");
+                            Console.WriteLine();
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+                    Console.WriteLine("잘못된 입력입니다.");
+                    Console.WriteLine();
+                }
+            }
+        }
 
         static void Main(string[] args)
         {
+            //  클래스 생성
             Player player = new Player("전사", 10, 5, 100, 1500);
             Inventory inventory = new Inventory();
             Shop shop = new Shop(); ;
 
+            //  아이템 목록
             Item noviceArmor = new Item("수련자갑옷", "방어구", 5, "수련에 도움을 주는 갑옷입니다.", 1000);
             Item ironArmor = new Item("무쇠갑옷", "방어구", 9, "무쇠로 만들어져 튼튼한 갑옷입니다.", 1800);
             Item spartaArmor = new Item("스파르타의 갑옷", "방어구", 15, "스파르타의 전사들이 사용했다는 전설의 갑옷입니다.", 3500);
@@ -602,11 +741,20 @@ namespace TextRPG
             Item bronzeAxe = new Item("청동 도끼", "무기", 5, "어디선가 사용됐던거 같은 도끼입니다.", 1500);
             Item spartaSpear = new Item("스파르타의 창", "무기", 7, "스파르타의 전사들이 사용했다는 전설의 창입니다.", 2700);
 
+            Item gmSword = new Item("운영자의 검", "무기", 999, "운영자용 테스트 검", 99999);
+            Item gmHat = new Item("운영자의 모자", "방어구", 999, "운영자용 테스트 모자", 99999);
+
+            //  초기 플레이어 아이템
+            inventory.AddItem(gmSword);
+            shop.buyItems.Add(gmSword);
+            inventory.AddItem(gmHat);
+            shop.buyItems.Add(gmHat);
             inventory.AddItem(spartaSpear);
             shop.buyItems.Add(ironArmor);
             inventory.AddItem(ironArmor);
             shop.buyItems.Add(spartaSpear);
-            
+
+            //  상점 아이템
             shop.AddShopItem(noviceArmor);
             shop.AddShopItem(ironArmor);
             shop.AddShopItem(spartaArmor);
@@ -614,6 +762,7 @@ namespace TextRPG
             shop.AddShopItem(bronzeAxe);
             shop.AddShopItem(spartaSpear);
 
+            //  마을부터 게임시작
             StartVilageScene(player, inventory, shop);
         }
     }

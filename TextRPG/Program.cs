@@ -10,6 +10,7 @@ namespace TextRPG
 {
     internal class Program
     {
+        //  플레이어 클래스
         public class Player
         {
             public int level { get; set; }
@@ -18,20 +19,26 @@ namespace TextRPG
             public int attackItem { get; set; }
             public int defense { get; set; }
             public int defenseItem { get; set; }
-            public int maxHealth { get; set; }
             public int health { get; set; }
             public int gold { get; set; }
+            public Item weapon { get; set; }
+            public Item armor { get; set; }
 
             public Player(string _chad, int _attack, int _defense, int _health, int _gold)
             {
                 level = 1;
                 chad = _chad;
                 attack = _attack;
+                attackItem = 0;
                 defense = _defense;
+                defenseItem = 0;
                 health = _health;
                 gold = _gold;
+                weapon = new Item("없음","무기",0,"-",0);
+                armor = new Item("없음", "방어구", 0, "-", 0);
             }
 
+            //  플레이어의 정보를 보여주는 함수
             public void PlayerInfo()
             {
                 Console.WriteLine("상태보기");
@@ -63,6 +70,7 @@ namespace TextRPG
             }
         }
 
+        //  아이템 클래스
         public class Item
         {
             public string name { get; set; }
@@ -82,6 +90,7 @@ namespace TextRPG
                 price = _price;
             }
 
+            //  아이템의 정보를 보여주는 클래스
             public void ItemInfo()
             {
                 int spaceLength = 12;
@@ -103,7 +112,8 @@ namespace TextRPG
                 }
             }
 
-            public void Equip(Player player)
+            //  아이템을 장착하거나 해제할 때 사용하는 함수
+            public void Equip(Player player,Item item)
             {
                 if (!equipState)
                 {
@@ -111,11 +121,15 @@ namespace TextRPG
 
                     if (type == "방어구")
                     {
-                        player.defenseItem += stat;
+                        player.armor.equipState = false;
+                        player.armor = item;
+                        player.defenseItem = player.armor.stat;
                     }
                     else if (type == "무기")
                     {
-                        player.attackItem += stat;
+                        player.weapon.equipState = false;
+                        player.weapon = item;
+                        player.attackItem = player.weapon.stat;
                     }
 
                     Console.WriteLine($"{name}을(를) 착용 하였습니다.");
@@ -127,11 +141,13 @@ namespace TextRPG
 
                     if (type == "방어구")
                     {
-                        player.defenseItem -= stat;
+                        player.armor = new Item("없음", "방어구", 0, "-", 0);
+                        player.defenseItem = player.armor.stat;
                     }
                     else if (type == "무기")
                     {
-                        player.attackItem -= stat;
+                        player.weapon = new Item("없음", "무기", 0, "-", 0);
+                        player.attackItem = player.weapon.stat;
                     }
 
                     Console.WriteLine($"{name}을(를) 해제 하였습니다.");
@@ -140,6 +156,7 @@ namespace TextRPG
             }
         }
 
+        //  인벤토리 클래스
         public class Inventory
         {
             public List<Item> items { get; set; }
@@ -149,12 +166,14 @@ namespace TextRPG
                 items = new List<Item>();
             }
 
+            //  인벤토리에 아이템을 넣는 함수
             public void AddItem(Item item)
             {
                 items.Add(item);
             }
         }
 
+        //  상점 클래스
         public class Shop
         {
             public List<Item> shopItems { get; set; }
@@ -166,11 +185,13 @@ namespace TextRPG
                 buyItems = new List<Item>();
             }
 
+            //  상점에 물품을 추가하는 함수
             public void AddShopItem(Item item)
             {
                 shopItems.Add(item);
             }
 
+            //  상점에 있는 아이템을 살 때 호출하는 함수
             public void BuyItem(Player player, Inventory inventory, Item item)
             {
                 inventory.AddItem(item);
@@ -178,6 +199,7 @@ namespace TextRPG
                 player.gold -= item.price;
             }
 
+            //  상점에 있는 아이템의 목록을 보여주는 함수
             public void ShopItemListView()
             {
                 Console.WriteLine("[아이템 목록]");
@@ -202,6 +224,7 @@ namespace TextRPG
             }
         }
 
+        //  시작 마을 장면 함수
         public static void StartVilageScene(Player player, Inventory inventory, Shop shop)
         {
             Console.WriteLine("****************************************************");
@@ -231,7 +254,7 @@ namespace TextRPG
 
                 try
                 {
-                    cmd = int.Parse(Console.ReadLine());
+                    int.TryParse(Console.ReadLine(), out cmd);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -260,7 +283,7 @@ namespace TextRPG
 
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -270,6 +293,7 @@ namespace TextRPG
             }
         }
 
+        //  상태 보기 장면 함수
         public static void StartStateScene(Player player, Inventory inventory, Shop shop)
         {
             player.PlayerInfo();
@@ -287,7 +311,7 @@ namespace TextRPG
 
                 try
                 {
-                    cmd = int.Parse(Console.ReadLine());
+                    int.TryParse(Console.ReadLine(), out cmd);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -308,7 +332,7 @@ namespace TextRPG
                         break;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -318,6 +342,7 @@ namespace TextRPG
             }
         }
 
+        //  인벤토리 장면 함수
         public static void StartInventoryScene(Player player, Inventory inventory, Shop shop)
         {
             Console.WriteLine("인벤토리");
@@ -354,7 +379,7 @@ namespace TextRPG
 
                 try
                 {
-                    cmd = int.Parse(Console.ReadLine());
+                    int.TryParse(Console.ReadLine(), out cmd);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -373,7 +398,7 @@ namespace TextRPG
                             break;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -383,6 +408,7 @@ namespace TextRPG
             }
         }
 
+        //  장착 관리 장면 함수
         public static void StartEquipManagementScene(Player player, Inventory inventory, Shop shop)
         {
             Console.WriteLine("인벤토리 - 장착관리");
@@ -419,7 +445,7 @@ namespace TextRPG
 
                 try
                 {
-                    cmd = int.Parse(Console.ReadLine());
+                    int.TryParse(Console.ReadLine(), out cmd);
 
                     if (cmd == 0)
                     {
@@ -427,7 +453,7 @@ namespace TextRPG
                     }
                     else if (cmd > 0 && cmd <= inventory.items.Count)
                     {
-                        inventory.items[cmd - 1].Equip(player);
+                        inventory.items[cmd - 1].Equip(player, inventory.items[cmd - 1]);
                         StartEquipManagementScene(player, inventory, shop);
                     }
                     else
@@ -436,7 +462,7 @@ namespace TextRPG
                         Console.WriteLine();
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -446,6 +472,7 @@ namespace TextRPG
             }
         }
 
+        //  상점 장면 함수
         public static void StartShopScene(Player player, Inventory inventory, Shop shop)
         {
             Console.WriteLine("상점");
@@ -473,7 +500,7 @@ namespace TextRPG
 
                 try
                 {
-                    cmd = int.Parse(Console.ReadLine());
+                    int.TryParse(Console.ReadLine(), out cmd);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -495,7 +522,7 @@ namespace TextRPG
                             break;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -505,6 +532,7 @@ namespace TextRPG
             }
         }
 
+        //  아이템 구매 장면 함수
         public static void StartBuyItemScene(Player player, Inventory inventory, Shop shop)
         {
             Console.WriteLine("상점 - 아이템 구매");
@@ -531,7 +559,7 @@ namespace TextRPG
 
                 try
                 {
-                    cmd = int.Parse(Console.ReadLine());
+                    int.TryParse(Console.ReadLine(), out cmd);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -570,7 +598,7 @@ namespace TextRPG
                         Console.WriteLine();
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -580,6 +608,7 @@ namespace TextRPG
             }
         }
 
+        //  아이템 판매 장면 함수
         public static void StartSaleItemScene(Player player, Inventory inventory, Shop shop)
         {
             Console.WriteLine("상점 - 아이템 판매");
@@ -612,7 +641,7 @@ namespace TextRPG
 
                 try
                 {
-                    cmd = int.Parse(Console.ReadLine());
+                    int.TryParse(Console.ReadLine(), out cmd);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -654,7 +683,7 @@ namespace TextRPG
                         Console.WriteLine();
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -664,6 +693,7 @@ namespace TextRPG
             }
         }
 
+        //  휴식하기 장면 함수
         public static void StartRestScene(Player player, Inventory inventory, Shop shop)
         {
             Console.WriteLine("휴식하기");
@@ -685,7 +715,7 @@ namespace TextRPG
 
                 try
                 {
-                    cmd = int.Parse(Console.ReadLine());
+                    int.TryParse(Console.ReadLine(), out cmd);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -716,7 +746,7 @@ namespace TextRPG
                             break;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");

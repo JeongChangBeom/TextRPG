@@ -1,15 +1,11 @@
 ﻿using System.Collections;
 using System;
 using System.Collections.Generic;
-using System.Reflection.Emit;
-using System.Text;
-using static TextRPG.Program;
-using System.Xml.Linq;
-using System.Security.Cryptography.X509Certificates;
+using System.Xml.Serialization;
 
 namespace TextRPG
 {
-    internal class Program
+    public class Program
     {
         //  플레이어 클래스
         public class Player
@@ -25,6 +21,19 @@ namespace TextRPG
             public int gold { get; set; }
             public Item weapon { get; set; }
             public Item armor { get; set; }
+
+            public Player()
+            {
+                level = 1;
+                exp = 0;
+                chad = "전사";
+                attack = 10;
+                attackItem = 0;
+                defense = 5;
+                defenseItem = 0;
+                health = 100;
+                gold = 1500;
+            }
 
             public Player(string _chad, int _attack, int _defense, int _health, int _gold)
             {
@@ -71,6 +80,24 @@ namespace TextRPG
                 Console.WriteLine($"체 력 : {health}");
                 Console.WriteLine($"Gold : {gold} G");
             }
+
+            public void Save(string fileName)
+            {
+                using (var stream = new FileStream(fileName, FileMode.Create))
+                {
+                    var XML = new XmlSerializer(typeof(Player));
+                    XML.Serialize(stream, this);
+                }
+            }
+
+            public static Player LoadFromFile(string fileName)
+            {
+                using (var stream = new FileStream(fileName, FileMode.Open))
+                {
+                    var XML = new XmlSerializer(typeof(Player));
+                    return (Player)XML.Deserialize(stream);
+                }
+            }
         }
 
         //  아이템 클래스
@@ -83,6 +110,15 @@ namespace TextRPG
             public bool equipState { get; set; }
             public int price { get; set; }
 
+            public Item()
+            {
+                name = "";
+                type = "";
+                stat = 0;
+                description = "";
+                equipState = false;
+                price = 0;
+            }
 
             public Item(string _name, string _type, int _stat, string _description, int _price)
             {
@@ -157,6 +193,24 @@ namespace TextRPG
                     Console.WriteLine();
                 }
             }
+
+            public void Save(string fileName)
+            {
+                using (var stream = new FileStream(fileName, FileMode.Create))
+                {
+                    var XML = new XmlSerializer(typeof(Item));
+                    XML.Serialize(stream, this);
+                }
+            }
+
+            public static Item LoadFromFile(string fileName)
+            {
+                using (var stream = new FileStream(fileName, FileMode.Open))
+                {
+                    var XML = new XmlSerializer(typeof(Item));
+                    return (Item)XML.Deserialize(stream);
+                }
+            }
         }
 
         //  인벤토리 클래스
@@ -173,6 +227,24 @@ namespace TextRPG
             public void AddItem(Item item)
             {
                 items.Add(item);
+            }
+
+            public void Save(string fileName)
+            {
+                using (var stream = new FileStream(fileName, FileMode.Create))
+                {
+                    var XML = new XmlSerializer(typeof(Inventory));
+                    XML.Serialize(stream, this);
+                }
+            }
+
+            public static Inventory LoadFromFile(string fileName)
+            {
+                using (var stream = new FileStream(fileName, FileMode.Open))
+                {
+                    var XML = new XmlSerializer(typeof(Inventory));
+                    return (Inventory)XML.Deserialize(stream);
+                }
             }
         }
 
@@ -223,6 +295,24 @@ namespace TextRPG
                         Console.Write($"| 구매완료 |");
                         Console.WriteLine();
                     }
+                }
+            }
+
+            public void Save(string fileName)
+            {
+                using (var stream = new FileStream(fileName, FileMode.Create))
+                {
+                    var XML = new XmlSerializer(typeof(Shop));
+                    XML.Serialize(stream, this);
+                }
+            }
+
+            public static Shop LoadFromFile(string fileName)
+            {
+                using (var stream = new FileStream(fileName, FileMode.Open))
+                {
+                    var XML = new XmlSerializer(typeof(Shop));
+                    return (Shop)XML.Deserialize(stream);
                 }
             }
         }
@@ -298,6 +388,8 @@ namespace TextRPG
             Console.WriteLine("3. 상점");
             Console.WriteLine("4. 던전입장");
             Console.WriteLine("5. 휴식하기");
+            Console.WriteLine("6. 저장하기");
+            Console.WriteLine("7. 불러오기");
 
             Console.WriteLine();
 
@@ -332,6 +424,12 @@ namespace TextRPG
                             break;
                         case 5:
                             StartRestScene(player, inventory, shop);
+                            break;
+                        case 6:
+                            StartSaveScene(player, inventory, shop);
+                            break;
+                        case 7:
+                            StartLoadScene(player, inventory, shop);
                             break;
                         default:
                             Console.WriteLine("잘못된 입력입니다.");
@@ -1032,12 +1130,132 @@ namespace TextRPG
             }
         }
 
+        public static void StartSaveScene(Player player, Inventory inventory, Shop shop)
+        {
+            Console.WriteLine("저장하기");
+            Console.WriteLine($"현재까지 플레이한 데이터를 저장할 수 있습니다.");
+
+            Console.WriteLine();
+
+            Console.WriteLine("1. 저장하기");
+            Console.WriteLine("0. 나가기");
+
+            Console.WriteLine();
+
+            while (true)
+            {
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.Write(">> ");
+
+                int cmd = -1;
+
+                try
+                {
+                    int.TryParse(Console.ReadLine(), out cmd);
+
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+
+                    switch (cmd)
+                    {
+                        case 1:
+                            DataSave(player, inventory, shop);
+                            Console.WriteLine("데이터를 저장했습니다.");
+                            Console.WriteLine();
+                            StartVilageScene(player, inventory, shop);
+                            break;
+                        case 0:
+                            StartVilageScene(player, inventory, shop);
+                            break;
+                        default:
+                            Console.WriteLine("잘못된 입력입니다.");
+                            Console.WriteLine();
+                            break;
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+                    Console.WriteLine("잘못된 입력입니다.");
+                    Console.WriteLine();
+                }
+            }
+        }
+
+        public static void DataSave(Player player, Inventory inventory, Shop shop)
+        {
+            player.Save("player.xml");
+            inventory.Save("inventory.xml");
+            shop.Save("shop.xml");
+        }
+
+        public static void StartLoadScene(Player player, Inventory inventory, Shop shop)
+        {
+            Console.WriteLine("불러오기");
+            Console.WriteLine($"이전에 저장했던 데이터를 불러올 수 있습니다.");
+
+            Console.WriteLine();
+
+            Console.WriteLine("1. 불러오기");
+            Console.WriteLine("0. 나가기");
+
+            Console.WriteLine();
+
+            while (true)
+            {
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.Write(">> ");
+
+                int cmd = -1;
+
+                try
+                {
+                    int.TryParse(Console.ReadLine(), out cmd);
+
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+
+                    switch (cmd)
+                    {
+                        case 1:
+                            DataLoad(ref player, ref inventory, ref shop);
+                            Console.WriteLine("데이터를 불러왔습니다.");
+                            Console.WriteLine();
+                            StartVilageScene(player, inventory, shop);
+                            break;
+                        case 0:
+                            StartVilageScene(player, inventory, shop);
+                            break;
+                        default:
+                            Console.WriteLine("잘못된 입력입니다.");
+                            Console.WriteLine();
+                            break;
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
+                    Console.WriteLine("잘못된 입력입니다.");
+                    Console.WriteLine();
+                }
+            }
+        }
+
+        public static void DataLoad(ref Player player, ref Inventory inventory, ref Shop shop)
+        {
+            player = Player.LoadFromFile("player.xml");
+            inventory = Inventory.LoadFromFile("inventory.xml");
+            shop = Shop.LoadFromFile("shop.xml");
+        }
+
         static void Main(string[] args)
         {
             //  클래스 생성
             Player player = new Player("전사", 10, 5, 100, 1500);
             Inventory inventory = new Inventory();
-            Shop shop = new Shop(); ;
+            Shop shop = new Shop();
 
             //  아이템 목록
             Item noviceArmor = new Item("수련자갑옷", "방어구", 5, "수련에 도움을 주는 갑옷입니다.", 1000);

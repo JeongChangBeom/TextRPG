@@ -19,8 +19,8 @@ namespace TextRPG
             public int defenseItem { get; set; }
             public int health { get; set; }
             public int gold { get; set; }
-            public Item weapon { get; set; }
-            public Item armor { get; set; }
+            public Item? weapon { get; set; }
+            public Item? armor { get; set; }
 
             //  Player 클래스의 직렬화를 위한 기본 생성자
             public Player()
@@ -99,7 +99,7 @@ namespace TextRPG
                 using (var stream = new FileStream(fileName, FileMode.Open))
                 {
                     var XML = new XmlSerializer(typeof(Player));
-                    return (Player)XML.Deserialize(stream);
+                    return (Player)XML.Deserialize(stream)!;
                 }
             }
         }
@@ -166,13 +166,13 @@ namespace TextRPG
 
                     if (type == "방어구")
                     {
-                        player.armor.equipState = false;
+                        player.armor!.equipState = false;
                         player.armor = item;
                         player.defenseItem = player.armor.stat;
                     }
                     else if (type == "무기")
                     {
-                        player.weapon.equipState = false;
+                        player.weapon!.equipState = false;
                         player.weapon = item;
                         player.attackItem = player.weapon.stat;
                     }
@@ -197,26 +197,6 @@ namespace TextRPG
 
                     Console.WriteLine($"{name}을(를) 해제 하였습니다.");
                     Console.WriteLine();
-                }
-            }
-
-            //  Item 클래스의 데이터를 저장하는 함수
-            public void Save(string fileName)
-            {
-                using (var stream = new FileStream(fileName, FileMode.Create))
-                {
-                    var XML = new XmlSerializer(typeof(Item));
-                    XML.Serialize(stream, this);
-                }
-            }
-
-            //  Item 클래스의 데이터를 불러오는 함수
-            public static Item LoadFromFile(string fileName)
-            {
-                using (var stream = new FileStream(fileName, FileMode.Open))
-                {
-                    var XML = new XmlSerializer(typeof(Item));
-                    return (Item)XML.Deserialize(stream);
                 }
             }
         }
@@ -254,7 +234,7 @@ namespace TextRPG
                 using (var stream = new FileStream(fileName, FileMode.Open))
                 {
                     var XML = new XmlSerializer(typeof(Inventory));
-                    return (Inventory)XML.Deserialize(stream);
+                    return (Inventory)XML.Deserialize(stream)!;
                 }
             }
         }
@@ -326,7 +306,7 @@ namespace TextRPG
                 using (var stream = new FileStream(fileName, FileMode.Open))
                 {
                     var XML = new XmlSerializer(typeof(Shop));
-                    return (Shop)XML.Deserialize(stream);
+                    return (Shop)XML.Deserialize(stream)!;
                 }
             }
         }
@@ -363,6 +343,12 @@ namespace TextRPG
                     name = "어려운 던전";
                     dungeonForce = 17;
                     reward = 2500;
+                }
+                else
+                {
+                    name = "-";
+                    dungeonForce = 0;
+                    reward = 0;
                 }
             }
 

@@ -749,8 +749,17 @@ namespace TextRPG
                         }
                         else
                         {
-                            Console.WriteLine("Gold가 부족합니다.");
-                            Console.WriteLine();
+                            //  Shop 클래스의 구매한 아이템을 관리하는 리스트인 buyItems에 사려는 아이템이 존재하면,
+                            if (shop.buyItems.FindIndex(Item => Item.name.Equals(shop.shopItems[cmd - 1].name)) >= 0)
+                            {
+                                Console.WriteLine("이미 구매한 아이템입니다.");
+                                Console.WriteLine();
+                            }
+                            else
+                            {
+                                Console.WriteLine("Gold가 부족합니다.");
+                                Console.WriteLine();
+                            }
                         }
 
                         StartBuyItemScene(player, inventory, shop);

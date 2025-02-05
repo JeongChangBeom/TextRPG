@@ -356,7 +356,7 @@ namespace TextRPG
             //  Dungeon이 시작되고 클리어를 했는지 못했는지 체크해주는 함수
             public void DungeonPlay(Player player)
             {
-                if (player.defense >= dungeonForce)
+                if (player.defense + player.defenseItem >= dungeonForce)
                 {
                     isClear = true;
                 }
@@ -952,7 +952,13 @@ namespace TextRPG
         //  던전 클리어 장면 함수
         public static void StartDungeonClearScene(Player player, Inventory inventory, Shop shop, Dungeon dungeon)
         {
-            int playerHP = player.health - new Random().Next(20, 36) + player.defense - dungeon.dungeonForce;
+
+            int playerHP = player.health - new Random().Next(20, 36) + player.defense + player.defenseItem - dungeon.dungeonForce;
+
+            if(playerHP > 100)
+            {
+                playerHP = 100;
+            }
 
             if (playerHP < 0)
             {
@@ -977,7 +983,7 @@ namespace TextRPG
             Console.WriteLine(player.health);
 
             Console.Write($"Gold {player.gold} G -> ");
-            player.gold = player.gold + (dungeon.reward * new Random().Next((int)player.attack, (int)player.attack * 2 + 1) / 100);
+            player.gold = player.gold + (dungeon.reward * new Random().Next((int)player.attack + player.attackItem, ((int)player.attack + player.attackItem)* 2 + 1) / 100);
             Console.WriteLine($"{player.gold} G");
 
             Console.Write($"EXP {player.exp} -> ");

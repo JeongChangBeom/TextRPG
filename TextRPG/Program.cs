@@ -167,10 +167,9 @@ namespace TextRPG
 
                     if (type == "방어구")
                     {
-                        if(player.armor.name != "없음")
+                        if (player.armor!.name != "없음")
                         {
-                            int curArmorIndex = inventory.items.FindIndex(Item => Item.name.Equals(player.armor.name));
-                            inventory.items[curArmorIndex].equipState = false;
+                            inventory.items[inventory.FindItem(player!.armor)].equipState = false;
                         }
 
                         player.armor = item;
@@ -178,10 +177,9 @@ namespace TextRPG
                     }
                     else if (type == "무기")
                     {
-                        if (player.weapon.name != "없음")
+                        if (player.weapon!.name != "없음")
                         {
-                            int curWeaponIndex = inventory.items.FindIndex(Item => Item.name.Equals(player.weapon.name));
-                            inventory.items[curWeaponIndex].equipState = false;
+                            inventory.items[inventory.FindItem(player!.weapon)].equipState = false;
                         }
 
                         player.weapon = item;
@@ -227,6 +225,12 @@ namespace TextRPG
             public void AddItem(Item item)
             {
                 items.Add(item);
+            }
+
+            //  인벤토리에서 아이템의 주소를 찾아주는 함수
+            public int FindItem(Item item)
+            {
+                return items.FindIndex(Item => Item.name.Equals(item.name));
             }
 
             //  Inventory 클래스의 데이터를 저장하기 위한 함수
@@ -275,6 +279,12 @@ namespace TextRPG
                 inventory.AddItem(item);
                 buyItems.Add(item);
                 player.gold -= item.price;
+            }
+
+            //  구매한 목록에서 아이템의 주소를 찾아주는 함수
+            public int FindBuyItem(Item item)
+            {
+                return buyItems.FindIndex(Item => Item.name.Equals(item.name));
             }
 
             //  상점에 있는 아이템의 목록을 보여주는 함수
@@ -740,7 +750,7 @@ namespace TextRPG
                         if (player.gold >= shop.shopItems[cmd - 1].price)
                         {
                             //  Shop 클래스의 구매한 아이템을 관리하는 리스트인 buyItems에 사려는 아이템이 존재하면,
-                            if (shop.buyItems.FindIndex(Item => Item.name.Equals(shop.shopItems[cmd - 1].name)) >= 0)
+                            if (shop.FindBuyItem(shop.shopItems[cmd - 1]) >= 0)
                             {
                                 Console.WriteLine("이미 구매한 아이템입니다.");
                                 Console.WriteLine();
@@ -755,7 +765,7 @@ namespace TextRPG
                         else
                         {
                             //  Shop 클래스의 구매한 아이템을 관리하는 리스트인 buyItems에 사려는 아이템이 존재하면,
-                            if (shop.buyItems.FindIndex(Item => Item.name.Equals(shop.shopItems[cmd - 1].name)) >= 0)
+                            if (shop.FindBuyItem(shop.shopItems[cmd - 1]) >= 0)
                             {
                                 Console.WriteLine("이미 구매한 아이템입니다.");
                                 Console.WriteLine();
@@ -828,32 +838,28 @@ namespace TextRPG
                         StartShopScene(player, inventory, shop);
                     }
                     else if (cmd > 0 && cmd <= inventory.items.Count)
-                    {
-                        //  shop.buyItems(구매한 아이템 목록)과 inventory.items(인벤토리에 존재하는 아이템)에서 판매하려는 아이템의 주소를 저장한다.
-                        int saleItemIndex = shop.buyItems.FindIndex(Item => Item.name.Equals(inventory.items[cmd - 1].name));
-                        int inventoryItemIndex = inventory.items.FindIndex(Item => Item.name.Equals(inventory.items[cmd - 1].name));
-
+                    {                      
                         //  만약 판매하려는 아이템이 장착 상태이면, 장착을 해제한다.
-                        if (inventory.items[inventoryItemIndex].equipState)
+                        if (inventory.items[inventory.FindItem(inventory.items[cmd-1])].equipState)
                         {
-                            inventory.items[inventoryItemIndex].equipState = false;
+                            inventory.items[inventory.FindItem(inventory.items[cmd - 1])].equipState = false;
 
-                            if (inventory.items[inventoryItemIndex].type == "방어구")
+                            if (inventory.items[inventory.FindItem(inventory.items[cmd - 1])].type == "방어구")
                             {
-                                player.defenseItem -= inventory.items[inventoryItemIndex].stat;
+                                player.defenseItem -= inventory.items[inventory.FindItem(inventory.items[cmd - 1])].stat;
                             }
-                            else if (inventory.items[inventoryItemIndex].type == "무기")
+                            else if (inventory.items[inventory.FindItem(inventory.items[cmd - 1])].type == "무기")
                             {
-                                player.attackItem -= inventory.items[inventoryItemIndex].stat;
+                                player.attackItem -= inventory.items[inventory.FindItem(inventory.items[cmd - 1])].stat;
                             }
                         }
 
                         //  판매한 아이템 가격의 85%만큼 gold를 획득한다.
-                        player.gold += (inventory.items[inventoryItemIndex].price) * 85 / 100;
+                        player.gold += (inventory.items[inventory.FindItem(inventory.items[cmd - 1])].price) * 85 / 100;
 
                         //  구매한 아이템 목록과 인벤토리에 존재하는 아이템 리스트에서 판매한 아이템을 삭제한다.
-                        shop.buyItems.RemoveAt(saleItemIndex);
-                        inventory.items.RemoveAt(inventoryItemIndex);
+                        shop.buyItems.RemoveAt(shop.FindBuyItem(inventory.items[cmd - 1]));
+                        inventory.items.RemoveAt(inventory.FindItem(inventory.items[cmd - 1]));
 
 
                         StartSaleItemScene(player, inventory, shop);

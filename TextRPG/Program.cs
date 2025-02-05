@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using static TextRPG.Program;
 
 namespace TextRPG
 {
@@ -951,6 +952,19 @@ namespace TextRPG
         //  던전 클리어 장면 함수
         public static void StartDungeonClearScene(Player player, Inventory inventory, Shop shop, Dungeon dungeon)
         {
+            int playerHP = player.health - new Random().Next(20, 36) + player.defense - dungeon.dungeonForce;
+
+            if (playerHP < 0)
+            {
+                Console.WriteLine("**********");
+                Console.WriteLine("GameOver!");
+                Console.WriteLine("**********");
+                Console.WriteLine();
+                Console.WriteLine("체력이 전부 닳았습니다!!");
+
+                Environment.Exit(0);
+            }
+
             Console.WriteLine("던전 클리어");
             Console.WriteLine("축하합니다!!");
             Console.WriteLine($"{dungeon.name}을 클리어 하였습니다.");
@@ -959,8 +973,8 @@ namespace TextRPG
 
             Console.WriteLine("[탐험 결과]");
             Console.Write($"체력 {player.health} -> ");
-            player.health = player.health - new Random().Next(20, 36) + player.defense - dungeon.dungeonForce;
-            Console.WriteLine($"{player.health}");
+            player.health = playerHP;
+            Console.WriteLine(player.health);
 
             Console.Write($"Gold {player.gold} G -> ");
             player.gold = player.gold + (dungeon.reward * new Random().Next((int)player.attack, (int)player.attack * 2 + 1) / 100);
@@ -977,8 +991,18 @@ namespace TextRPG
                 Console.Write($"LV {player.level} -> ");
                 player.level++;
                 Console.WriteLine($"LV {player.level}");
+
+                Console.Write($"EXP {player.exp} -> ");
                 player.exp = 0;
-                Console.WriteLine($"EXP {player.exp}");
+                Console.WriteLine(player.exp);
+
+                Console.Write($"기본공격력 {player.attack} -> ");
+                player.attack += 0.5f;
+                Console.WriteLine(player.attack);
+
+                Console.Write($"기본방어력 {player.defense} -> ");
+                player.defense += 1;
+                Console.WriteLine(player.defense);
             }
 
             Console.WriteLine();
@@ -1025,6 +1049,19 @@ namespace TextRPG
         //  던전 실패 장면 함수
         public static void StartDungeonFailScene(Player player, Inventory inventory, Shop shop, Dungeon dungeon)
         {
+            int playerHP = player.health / 2;
+
+            if (playerHP < 0)
+            {
+                Console.WriteLine("**********");
+                Console.WriteLine("GameOver!");
+                Console.WriteLine("**********");
+                Console.WriteLine();
+                Console.WriteLine("체력이 전부 닳았습니다!!");
+
+                Environment.Exit(0);
+            }
+
             Console.WriteLine("던전 실패");
             Console.WriteLine($"{dungeon.name}을 클리어하지 못했습니다.");
 
@@ -1032,7 +1069,7 @@ namespace TextRPG
 
             Console.WriteLine("[탐험 결과]");
             Console.Write($"체력 {player.health} -> ");
-            player.health /= 2;
+            player.health = playerHP;
             Console.WriteLine($"{player.health}");
 
             Console.WriteLine($"Gold {player.gold} G -> {player.gold} G");

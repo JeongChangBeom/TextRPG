@@ -637,8 +637,9 @@ namespace TextRPG
                     }
                     else if (cmd > 0 && cmd <= inventory.items.Count)
                     {
-                        //  플레이어가 선택한 장비를 장착한다.
+                        //  플레이어가 선택한 장비를 장착 또는 해제한다.
                         inventory.items[cmd - 1].Equip(player, inventory.items[cmd - 1], inventory);
+                        Thread.Sleep(1000);
                         StartEquipManagementScene(player, inventory, shop);
                     }
                     else
@@ -788,7 +789,7 @@ namespace TextRPG
                                 Console.WriteLine();
                             }
                         }
-
+                        Thread.Sleep(1000);
                         StartBuyItemScene(player, inventory, shop);
                     }
                     else
@@ -874,7 +875,6 @@ namespace TextRPG
                         //  구매한 아이템 목록과 인벤토리에 존재하는 아이템 리스트에서 판매한 아이템을 삭제한다.
                         shop.buyItems.RemoveAt(shop.FindBuyItem(inventory.items[cmd - 1]));
                         inventory.items.RemoveAt(inventory.FindItem(inventory.items[cmd - 1]));
-
 
                         StartSaleItemScene(player, inventory, shop);
                     }
@@ -1198,6 +1198,7 @@ namespace TextRPG
                                 player.health = 100;
                                 Console.WriteLine("휴식을 완료했습니다.");
                                 Console.WriteLine();
+                                Thread.Sleep(1000);
                                 StartVilageScene(player, inventory, shop);
                             }
                             else
@@ -1260,6 +1261,7 @@ namespace TextRPG
                             DataSave(player, inventory, shop);
                             Console.WriteLine("데이터를 저장했습니다.");
                             Console.WriteLine();
+                            Thread.Sleep(1000);
                             StartVilageScene(player, inventory, shop);
                             break;
                         case 0:
@@ -1324,6 +1326,7 @@ namespace TextRPG
                             DataLoad(ref player, ref inventory, ref shop);
                             Console.WriteLine("데이터를 불러왔습니다.");
                             Console.WriteLine();
+                            Thread.Sleep(1000);
                             StartVilageScene(player, inventory, shop);
                             break;
                         case 0:

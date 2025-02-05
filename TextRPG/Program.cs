@@ -1241,9 +1241,9 @@ namespace TextRPG
         //  현재 게임의 데이터를 저장하는 함수
         public static void DataSave(Player player, Inventory inventory, Shop shop)
         {
-            player.Save("player.xml");
-            inventory.Save("inventory.xml");
-            shop.Save("shop.xml");
+            player.Save("Save/player.xml");
+            inventory.Save("Save/inventory.xml");
+            shop.Save("Save/shop.xml");
         }
 
         //  불러오기 장면 함수
@@ -1303,9 +1303,9 @@ namespace TextRPG
         //  이전에 저장했던 게임의 데이터를 불러오는 함수
         public static void DataLoad(ref Player player, ref Inventory inventory, ref Shop shop)
         {
-            player = Player.LoadFromFile("player.xml");
-            inventory = Inventory.LoadFromFile("inventory.xml");
-            shop = Shop.LoadFromFile("shop.xml");
+            player = Player.LoadFromFile("Save/player.xml");
+            inventory = Inventory.LoadFromFile("Save/inventory.xml");
+            shop = Shop.LoadFromFile("Save/shop.xml");
         }
         static void Main(string[] args)
         {

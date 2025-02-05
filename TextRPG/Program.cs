@@ -406,7 +406,7 @@ namespace TextRPG
 
                 try
                 {
-                    int.TryParse(Console.ReadLine(), out cmd);
+                    cmd = int.Parse(Console.ReadLine()!);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -469,7 +469,7 @@ namespace TextRPG
 
                 try
                 {
-                    int.TryParse(Console.ReadLine(), out cmd);
+                    cmd = int.Parse(Console.ReadLine()!);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -483,11 +483,6 @@ namespace TextRPG
                             Console.WriteLine("잘못된 입력입니다.");
                             Console.WriteLine();
                             break;
-                    }
-
-                    if (cmd == 0)
-                    {
-                        break;
                     }
                 }
                 catch (Exception)
@@ -539,7 +534,7 @@ namespace TextRPG
 
                 try
                 {
-                    int.TryParse(Console.ReadLine(), out cmd);
+                    cmd = int.Parse(Console.ReadLine()!);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -606,7 +601,7 @@ namespace TextRPG
 
                 try
                 {
-                    int.TryParse(Console.ReadLine(), out cmd);
+                    cmd = int.Parse(Console.ReadLine()!);
 
                     if (cmd == 0)
                     {
@@ -662,7 +657,7 @@ namespace TextRPG
 
                 try
                 {
-                    int.TryParse(Console.ReadLine(), out cmd);
+                    cmd = int.Parse(Console.ReadLine()!);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -721,7 +716,7 @@ namespace TextRPG
 
                 try
                 {
-                    int.TryParse(Console.ReadLine(), out cmd);
+                    cmd = int.Parse(Console.ReadLine()!);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -813,7 +808,7 @@ namespace TextRPG
 
                 try
                 {
-                    int.TryParse(Console.ReadLine(), out cmd);
+                    cmd = int.Parse(Console.ReadLine()!);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -893,7 +888,7 @@ namespace TextRPG
 
                 try
                 {
-                    int.TryParse(Console.ReadLine(), out cmd);
+                    cmd = int.Parse(Console.ReadLine()!);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -1035,7 +1030,7 @@ namespace TextRPG
 
                 try
                 {
-                    int.TryParse(Console.ReadLine(), out cmd);
+                    cmd = int.Parse(Console.ReadLine()!);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -1104,7 +1099,7 @@ namespace TextRPG
 
                 try
                 {
-                    int.TryParse(Console.ReadLine(), out cmd);
+                    cmd = int.Parse(Console.ReadLine()!);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -1152,7 +1147,7 @@ namespace TextRPG
 
                 try
                 {
-                    int.TryParse(Console.ReadLine(), out cmd);
+                    cmd = int.Parse(Console.ReadLine()!);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -1215,7 +1210,7 @@ namespace TextRPG
 
                 try
                 {
-                    int.TryParse(Console.ReadLine(), out cmd);
+                    cmd = int.Parse(Console.ReadLine()!);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");
@@ -1277,7 +1272,7 @@ namespace TextRPG
 
                 try
                 {
-                    int.TryParse(Console.ReadLine(), out cmd);
+                    cmd = int.Parse(Console.ReadLine()!);
 
                     Console.WriteLine();
                     Console.WriteLine("----------------------------------------------------------");

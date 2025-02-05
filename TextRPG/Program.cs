@@ -159,7 +159,7 @@ namespace TextRPG
             }
 
             //  아이템을 장착하거나 해제할 때 사용하는 함수
-            public void Equip(Player player, Item item)
+            public void Equip(Player player, Item item, Inventory inventory)
             {
                 if (!equipState)
                 {
@@ -167,13 +167,23 @@ namespace TextRPG
 
                     if (type == "방어구")
                     {
-                        player.armor!.equipState = false;
+                        if(player.armor.name != "없음")
+                        {
+                            int curArmorIndex = inventory.items.FindIndex(Item => Item.name.Equals(player.armor.name));
+                            inventory.items[curArmorIndex].equipState = false;
+                        }
+
                         player.armor = item;
                         player.defenseItem = player.armor.stat;
                     }
                     else if (type == "무기")
                     {
-                        player.weapon!.equipState = false;
+                        if (player.weapon.name != "없음")
+                        {
+                            int curWeaponIndex = inventory.items.FindIndex(Item => Item.name.Equals(player.weapon.name));
+                            inventory.items[curWeaponIndex].equipState = false;
+                        }
+
                         player.weapon = item;
                         player.attackItem = player.weapon.stat;
                     }
@@ -596,12 +606,12 @@ namespace TextRPG
 
                 int cmd = -1;
 
-                Console.WriteLine();
-                Console.WriteLine("----------------------------------------------------------");
-
                 try
                 {
                     cmd = int.Parse(Console.ReadLine()!);
+
+                    Console.WriteLine();
+                    Console.WriteLine("----------------------------------------------------------");
 
                     if (cmd == 0)
                     {
@@ -610,7 +620,7 @@ namespace TextRPG
                     else if (cmd > 0 && cmd <= inventory.items.Count)
                     {
                         //  플레이어가 선택한 장비를 장착한다.
-                        inventory.items[cmd - 1].Equip(player, inventory.items[cmd - 1]);
+                        inventory.items[cmd - 1].Equip(player, inventory.items[cmd - 1], inventory);
                         StartEquipManagementScene(player, inventory, shop);
                     }
                     else
@@ -959,7 +969,7 @@ namespace TextRPG
 
             int playerHP = player.health - new Random().Next(20, 36) + player.defense + player.defenseItem - dungeon.dungeonForce;
 
-            if(playerHP > 100)
+            if (playerHP > 100)
             {
                 playerHP = 100;
             }
@@ -987,7 +997,7 @@ namespace TextRPG
             Console.WriteLine(player.health);
 
             Console.Write($"Gold {player.gold} G -> ");
-            player.gold = player.gold + (dungeon.reward * new Random().Next((int)player.attack + player.attackItem, ((int)player.attack + player.attackItem)* 2 + 1) / 100);
+            player.gold = player.gold + (dungeon.reward * new Random().Next((int)player.attack + player.attackItem, ((int)player.attack + player.attackItem) * 2 + 1) / 100);
             Console.WriteLine($"{player.gold} G");
 
             Console.Write($"EXP {player.exp} -> ");

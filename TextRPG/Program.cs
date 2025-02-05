@@ -397,6 +397,8 @@ namespace TextRPG
         //  시작 마을 장면 함수
         public static void StartVilageScene(Player player, Inventory inventory, Shop shop)
         {
+            Console.Clear();
+
             Console.WriteLine("****************************************************");
             Console.WriteLine();
             Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
@@ -474,6 +476,8 @@ namespace TextRPG
         //  상태 보기 장면 함수
         public static void StartStateScene(Player player, Inventory inventory, Shop shop)
         {
+            Console.Clear();
+
             player.PlayerInfo();
 
             Console.WriteLine();
@@ -518,6 +522,8 @@ namespace TextRPG
         //  인벤토리 장면 함수
         public static void StartInventoryScene(Player player, Inventory inventory, Shop shop)
         {
+            Console.Clear();
+
             Console.WriteLine("인벤토리");
             Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
             Console.WriteLine();
@@ -586,6 +592,8 @@ namespace TextRPG
         //  장착 관리 장면 함수
         public static void StartEquipManagementScene(Player player, Inventory inventory, Shop shop)
         {
+            Console.Clear();
+
             Console.WriteLine("인벤토리 - 장착관리");
             Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
             Console.WriteLine();
@@ -652,6 +660,8 @@ namespace TextRPG
         //  상점 장면 함수
         public static void StartShopScene(Player player, Inventory inventory, Shop shop)
         {
+            Console.Clear();
+
             Console.WriteLine("상점");
             Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
             Console.WriteLine();
@@ -712,6 +722,8 @@ namespace TextRPG
         //  아이템 구매 장면 함수
         public static void StartBuyItemScene(Player player, Inventory inventory, Shop shop)
         {
+            Console.Clear();
+
             Console.WriteLine("상점 - 아이템 구매");
             Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
             Console.WriteLine();
@@ -798,6 +810,8 @@ namespace TextRPG
         //  아이템 판매 장면 함수
         public static void StartSaleItemScene(Player player, Inventory inventory, Shop shop)
         {
+            Console.Clear();
+
             Console.WriteLine("상점 - 아이템 판매");
             Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
             Console.WriteLine();
@@ -883,6 +897,8 @@ namespace TextRPG
         //  던전 장면 함수
         public static void StartDungeonScene(Player player, Inventory inventory, Shop shop)
         {
+            Console.Clear();
+
             Console.WriteLine("던전입장");
             Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
 
@@ -972,6 +988,7 @@ namespace TextRPG
         //  던전 클리어 장면 함수
         public static void StartDungeonClearScene(Player player, Inventory inventory, Shop shop, Dungeon dungeon)
         {
+            Console.Clear();
 
             int playerHP = player.health - new Random().Next(20, 36) + player.defense + player.defenseItem - dungeon.dungeonForce;
 
@@ -1075,6 +1092,8 @@ namespace TextRPG
         //  던전 실패 장면 함수
         public static void StartDungeonFailScene(Player player, Inventory inventory, Shop shop, Dungeon dungeon)
         {
+            Console.Clear();
+
             int playerHP = player.health / 2;
 
             if (playerHP < 0)
@@ -1144,6 +1163,8 @@ namespace TextRPG
         //  휴식하기 장면 함수
         public static void StartRestScene(Player player, Inventory inventory, Shop shop)
         {
+            Console.Clear();
+
             Console.WriteLine("휴식하기");
             Console.WriteLine($"500 G 를 내면 체력을 회복할 수 있습니다. (보유 골드 : {player.gold}) G");
 
@@ -1207,6 +1228,8 @@ namespace TextRPG
         //  저장하기 장면 함수
         public static void StartSaveScene(Player player, Inventory inventory, Shop shop)
         {
+            Console.Clear();
+
             Console.WriteLine("저장하기");
             Console.WriteLine($"현재까지 플레이한 데이터를 저장할 수 있습니다.");
 
@@ -1269,6 +1292,8 @@ namespace TextRPG
         //  불러오기 장면 함수
         public static void StartLoadScene(Player player, Inventory inventory, Shop shop)
         {
+            Console.Clear();
+
             Console.WriteLine("불러오기");
             Console.WriteLine($"이전에 저장했던 데이터를 불러올 수 있습니다.");
 
